@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sambung Karya - Ekosistem Digital Mahasiswa & UMKM</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        purple: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            200: '#ddd6fe',
+                            300: '#c4b5fd',
+                            400: '#a78bfa',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                            800: '#5b21b6',
+                            900: '#4c1d95',
+                            950: '#2e1065',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .bg-gradient-purple {
+            background: linear-gradient(135deg, #4c1d95 0%, #7c3aed 50%, #a78bfa 100%);
+        }
+        .text-gradient {
+            background: linear-gradient(135deg, #7c3aed, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(221, 214, 254, 0.5);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #a78bfa;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #7c3aed;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased flex flex-col min-h-screen">
+
+    <!-- ================= AUTH & ACCESS MODAL OVERLAY ================= -->
+    <div id="authOverlay" class="fixed inset-0 z-50 flex items-center justify-center bg-purple-950/80 backdrop-blur-md p-4 transition-all duration-300">
+        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden border border-purple-100 p-6 sm:p-8 relative animate-fade-in">
+            <!-- Header Logo in Auth -->
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-purple-100 text-purple-700 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-inner">
+                    <i class="fa-solid fa-graduation-cap text-3xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-purple-950">Sambung<span class="text-purple-600">Karya</span></h2>
+                <p class="text-xs text-slate-500 mt-1">Inovasi Ekosistem Digital Penghubung Talenta Mahasiswa dan UMKM</p>
+            </div>
+
+            <!-- Login Tabs -->
+            <div class="flex border-b border-purple-100 mb-6">
+                <button id="tabGoogleBtn" onclick="switchAuthTab('google')" class="flex-1 py-2 font-medium text-sm text-purple-700 border-b-2 border-purple-600 transition-colors">
+                    <i class="fa-brands fa-google mr-2"></i>Google Login
+                </button>
+                <button id="tabPassBtn" onclick="switchAuthTab('pass')" class="flex-1 py-2 font-medium text-sm text-slate-400 hover:text-purple-600 border-b-2 border-transparent transition-colors">
+                    <i class="fa-solid fa-key mr-2"></i>Sandi Demo
+                </button>
+            </div>
+
+            <!-- Google Login View -->
+            <div id="googleView" class="space-y-4">
+                <p class="text-xs text-center text-slate-600">Masuk menggunakan akun Google Anda untuk mengakses ekosistem Sambung Karya.</p>
+                <button onclick="handleGoogleLogin('Mahasiswa')" class="w-full flex items-center justify-center gap-3 bg-white hover:bg-slate-50 text-slate-700 font-semibold py-3 px-4 rounded-xl border border-slate-300 shadow-sm transition-all hover:shadow">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                    </svg>
+                    <span>Masuk sebagai Mahasiswa</span>
+                </button>
+                <button onclick="handleGoogleLogin('UMKM')" class="w-full flex items-center justify-center gap-3 bg-purple-50 hover:bg-purple-100 text-purple-700 font-semibold py-3 px-4 rounded-xl border border-purple-200 shadow-sm transition-all">
+                    <i class="fa-solid fa-store text-purple-600"></i>
+                    <span>Masuk sebagai Pelaku UMKM</span>
+                </button>
+            </div>
+
+            <!-- Password View -->
+            <div id="passView" class="space-y-4 hidden">
+                <p class="text-xs text-slate-500">Masukkan kata sandi akses publik untuk langsung meninjau platform (Default Demo: <span class="font-mono bg-slate-100 px-1 py-0.5 rounded text-purple-700">sambungkarya2026</span>).</p>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Kata Sandi Platform</label>
+                    <input type="password" id="demoPasswordInput" placeholder="Masukkan password..." class="w-full px-4 py-2.5 rounded-xl border border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm">
+                </div>
+                <div id="passError" class="text-xs text-red-500 hidden"><i class="fa-solid fa-circle-exclamation mr-1"></i>Kata sandi salah! Gunakan: sambungkarya2026</div>
+                <button onclick="handlePasswordAuth()" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2.5 rounded-xl shadow-md transition-all">
+                    Buka Akses Website
+                </button>
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-slate-100 text-center">
+                <span class="text-xs text-slate-400">Butuh bantuan? WA Admin: </span>
+                <a href="https://wa.me/6282360482744" target="_blank" class="text-xs font-semibold text-purple-600 hover:underline">082360482744</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= NAVBAR ================= -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-purple-100 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-12 h-12 bg-gradient-purple text-white rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+                    <i class="fa-solid fa-graduation-cap text-2xl"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-1.5">
+                        <span class="text-2xl font-extrabold text-purple-950 tracking-tight">Sambung</span>
+                        <span class="text-2xl font-extrabold text-purple-600 tracking-tight">Karya</span>
+                    </div>
+                    <span class="text-[10px] sm:text-xs font-medium text-slate-500 block -mt-1 hidden sm:block">Ekosistem Talenta Mahasiswa & UMKM</span>
+                </div>
+            </a>
+
+            <!-- Navigation Links (Desktop) -->
+            <nav class="hidden md:flex items-center space-x-1 lg:space-x-2 text-sm font-semibold text-slate-600">
+                <a href="#beranda" class="px-3 py-2 rounded-lg hover:text-purple-600 hover:bg-purple-50 transition-colors">Beranda</a>
+                <a href="#marketplace" class="px-3 py-2 rounded-lg hover:text-purple-600 hover:bg-purple-50 transition-colors">Jasa Mahasiswa</a>
+                <a href="#lowongan" class="px-3 py-2 rounded-lg hover:text-purple-600 hover:bg-purple-50 transition-colors">Proyek UMKM</a>
+                <a href="#escrow" class="px-3 py-2 rounded-lg hover:text-purple-600 hover:bg-purple-50 transition-colors">Fitur Escrow</a>
+                <a href="#tim" class="px-3 py-2 rounded-lg hover:text-purple-600 hover:bg-purple-50 transition-colors">Tim Kami</a>
+            </nav>
+
+            <!-- User Info & WA CTA -->
+            <div class="flex items-center gap-3">
+                <a href="https://wa.me/6282360482744?text=Halo%20Admin%20Sambung%20Karya,%20saya%20ingin%20bertanya%20mengenai%20layanan..." target="_blank" class="hidden sm:inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow-md transition-all hover:scale-105">
+                    <i class="fa-brands fa-whatsapp text-base"></i>
+                    <span>082360482744</span>
+                </a>
+
+                <!-- User Profile / Auth State Badge -->
+                <div id="userBadge" class="flex items-center gap-2 bg-purple-50 border border-purple-200 px-3 py-1.5 rounded-full">
+                    <div id="userAvatar" class="w-7 h-7 bg-purple-600 text-white rounded-full flex items-center justify-center text-xs font-bold">
+                        G
+                    </div>
+                    <span id="userName" class="text-xs font-semibold text-purple-900 max-w-[100px] truncate">Guest User</span>
+                    <button onclick="logout()" title="Keluar" class="text-slate-400 hover:text-red-500 ml-1">
+                        <i class="fa-solid fa-right-from-bracket text-xs"></i>
+                    </button>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button onclick="toggleMobileMenu()" class="md:hidden text-slate-600 hover:text-purple-600 p-2">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobileMenu" class="hidden md:hidden bg-white border-b border-purple-100 px-4 pt-2 pb-4 space-y-2">
+            <a href="#beranda" onclick="toggleMobileMenu()" class="block py-2 text-slate-700 font-medium hover:text-purple-600">Beranda</a>
+            <a href="#marketplace" onclick="toggleMobileMenu()" class="block py-2 text-slate-700 font-medium hover:text-purple-600">Jasa Mahasiswa</a>
+            <a href="#lowongan" onclick="toggleMobileMenu()" class="block py-2 text-slate-700 font-medium hover:text-purple-600">Proyek UMKM</a>
+            <a href="#escrow" onclick="toggleMobileMenu()" class="block py-2 text-slate-700 font-medium hover:text-purple-600">Fitur Escrow</a>
+            <a href="#tim" onclick="toggleMobileMenu()" class="block py-2 text-slate-700 font-medium hover:text-purple-600">Tim Pengembang</a>
+            <a href="https://wa.me/6282360482744" target="_blank" class="flex items-center gap-2 text-emerald-600 font-bold py-2">
+                <i class="fa-brands fa-whatsapp"></i> Chat WhatsApp (082360482744)
+            </a>
+        </div>
+    </header>
+
+    <main class="flex-grow">
+        <!-- ================= HERO SECTION ================= -->
+        <section id="beranda" class="relative bg-gradient-purple text-white py-16 lg:py-24 overflow-hidden">
+            <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                    <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+                        <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 px-4 py-1.5 rounded-full text-xs font-medium text-purple-100">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                            Mendukung Sustainable Development Goals (SDGs 8 & 10)
+                        </div>
+                        <h1 class="text-3xl sm:text-5xl font-extrabold leading-tight tracking-tight">
+                            Sambungkan Talenta Mahasiswa dengan Kebutuhan UMKM
+                        </h1>
+                        <p class="text-purple-100 text-base sm:text-lg max-w-2xl mx-auto lg:mx-0 font-light">
+                            Platform terpercaya penghubung mahasiswa berbakat yang mencari pengalaman nyata dan portofolio dengan UMKM yang membutuhkan solusi digital terjangkau dan aman via <span class="font-semibold text-yellow-300">Escrow Payment</span>.
+                        </p>
+                        <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-2">
+                            <a href="#marketplace" class="bg-yellow-400 hover:bg-yellow-300 text-purple-950 font-bold px-6 py-3.5 rounded-xl shadow-lg transition-all hover:scale-105 text-center">
+                                <i class="fa-solid fa-briefcase mr-2"></i>Cari Jasa Mahasiswa
+                            </a>
+                            <a href="#lowongan" onclick="openPostJobModal()" class="bg-white/10 hover:bg-white/20 border border-white/30 text-white font-semibold px-6 py-3.5 rounded-xl backdrop-blur-md transition-all text-center">
+                                <i class="fa-solid fa-plus-circle mr-2"></i>Tawarkan Pekerjaan UMKM
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Visual Card Showcase -->
+                    <div class="lg:col-span-5">
+                        <div class="relative mx-auto max-w-sm lg:max-w-none">
+                            <div class="bg-white rounded-2xl p-6 shadow-2xl text-slate-800 border border-purple-100 space-y-4">
+                                <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 bg-purple-100 text-purple-700 rounded-lg flex items-center justify-center font-bold">
+                                            SK
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-sm text-purple-950">Proyek Garansi Escrow</h4>
+                                            <p class="text-[11px] text-slate-500">Aman untuk UMKM & Mahasiswa</p>
+                                        </div>
+                                    </div>
+                                    <span class="bg-emerald-100 text-emerald-700 text-[10px] font-bold px-2 py-1 rounded-md">
+                                        Protected 100%
+                                    </span>
+                                </div>
+                                <div class="space-y-2 text-xs">
+                                    <div class="flex justify-between text-slate-600">
+                                        <span>Total Nilai Proyek:</span>
+                                        <span class="font-bold text-slate-800">Rp 500.000</span>
+                                    </div>
+                                    <div class="flex justify-between text-slate-600">
+                                        <span>Status Dana:</span>
+                                        <span class="font-semibold text-purple-600"><i class="fa-solid fa-lock mr-1"></i>Tersimpan di Escrow</span>
+                                    </div>
+                                    <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden mt-1">
+                                        <div class="bg-purple-600 h-full w-3/4"></div>
+                                    </div>
+                                </div>
+                                <div class="bg-purple-50 p-3 rounded-xl border border-purple-100 flex items-center justify-between">
+                                    <div class="text-[11px] text-purple-900 font-medium">
+                                        <i class="fa-solid fa-shield-halved text-purple-600 mr-1"></i> Transaksi Terlindungi
+                                    </div>
+                                    <span class="text-[10px] text-purple-700 bg-white px-2 py-0.5 rounded font-bold border border-purple-200">Komisi 12.5%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= IMPACT STATS (SDGs) ================= -->
+        <section class="bg-white py-8 border-b border-purple-100 shadow-inner">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+                    <div class="p-4 rounded-xl bg-purple-50/50">
+                        <div class="text-2xl sm:text-3xl font-black text-purple-700">631K+</div>
+                        <div class="text-xs text-slate-500 mt-1 font-medium">Potensi UMKM di Riau</div>
+                    </div>
+                    <div class="p-4 rounded-xl bg-purple-50/50">
+                        <div class="text-2xl sm:text-3xl font-black text-purple-700">12.5%</div>
+                        <div class="text-xs text-slate-500 mt-1 font-medium">Biaya Komisi Efisien</div>
+                    </div>
+                    <div class="p-4 rounded-xl bg-purple-50/50">
+                        <div class="text-2xl sm:text-3xl font-black text-purple-700">100%</div>
+                        <div class="text-xs text-slate-500 mt-1 font-medium">Sistem Pembayaran Escrow</div>
+                    </div>
+                    <div class="p-4 rounded-xl bg-purple-50/50">
+                        <div class="text-2xl sm:text-3xl font-black text-purple-700">SDG 8 & 10</div>
+                        <div class="text-xs text-slate-500 mt-1 font-medium">Pertumbuhan Ekonomi & Inklusi</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= MARKETPLACE JASA MAHASISWA ================= -->
+        <section id="marketplace" class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+                <div>
+                    <span class="text-purple-600 font-bold text-xs uppercase tracking-wider">Talenta Terkurasi</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-purple-950 mt-1">Katalog Jasa & Karya Mahasiswa</h2>
+                    <p class="text-slate-500 text-sm mt-1">Pilih mahasiswa berbakat dari berbagai Universitas di Riau untuk membantu bisnis Anda.</p>
+                </div>
+
+                <!-- Filter & Search -->
+                <div class="flex flex-wrap items-center gap-2">
+                    <button onclick="filterServices('all')" class="category-btn active bg-purple-600 text-white text-xs font-semibold px-4 py-2 rounded-xl transition-all">Semua</button>
+                    <button onclick="filterServices('Desain')" class="category-btn bg-purple-50 hover:bg-purple-100 text-purple-700 text-xs font-semibold px-4 py-2 rounded-xl transition-all">Desain</button>
+                    <button onclick="filterServices('Foto')" class="category-btn bg-purple-50 hover:bg-purple-100 text-purple-700 text-xs font-semibold px-4 py-2 rounded-xl transition-all">Foto Product</button>
+                    <button onclick="filterServices('Web')" class="category-btn bg-purple-50 hover:bg-purple-100 text-purple-700 text-xs font-semibold px-4 py-2 rounded-xl transition-all">Website</button>
+                    <button onclick="filterServices('Akuntansi')" class="category-btn bg-purple-50 hover:bg-purple-100 text-purple-700 text-xs font-semibold px-4 py-2 rounded-xl transition-all">Pembukuan</button>
+                </div>
+            </div>
+
+            <!-- Grid Jasa Mahasiswa -->
+            <div id="servicesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Dynamically populated via JavaScript -->
+            </div>
+        </section>
+
+        <!-- ================= UMKM JOB BOARD (Pekerjaan UMKM) ================= -->
+        <section id="lowongan" class="py-16 bg-purple-900 text-white relative">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+                    <div>
+                        <span class="text-purple-300 font-bold text-xs uppercase tracking-wider">Peluang Kerja Unuk Mahasiswa</span>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-1">Papan Penawaran Proyek UMKM</h2>
+                        <p class="text-purple-200 text-sm mt-1">UMKM menawarkan pekerjaan freelance nyata. Mahasiswa dapat melamar langsung.</p>
+                    </div>
+                    <button onclick="openPostJobModal()" class="bg-yellow-400 hover:bg-yellow-300 text-purple-950 font-bold px-5 py-2.5 rounded-xl shadow-lg transition-all text-sm inline-flex items-center gap-2">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>Posting Lowongan UMKM</span>
+                    </button>
+                </div>
+
+                <!-- Job List -->
+                <div id="jobList" class="space-y-4">
+                    <!-- Dynamically populated via JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= ESCROW SIMULATOR ================= -->
+        <section id="escrow" class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <span class="text-purple-600 font-bold text-xs uppercase tracking-wider">Keamanan Transaksi</span>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-purple-950 mt-1">Sistem Rekening Bersama (Escrow)</h2>
+                <p class="text-slate-500 text-sm mt-1">Melindungi UMKM agar hasil pekerjaan sesuai brief, dan menjamin mahasiswa mendapat bayaran tepat waktu.</p>
+            </div>
+
+            <!-- Flow Step Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+                <div class="bg-white p-6 rounded-2xl border border-purple-100 shadow-sm relative text-center">
+                    <div class="w-12 h-12 bg-purple-100 text-purple-700 rounded-full flex items-center justify-center font-bold text-lg mx-auto mb-3">1</div>
+                    <h3 class="font-bold text-purple-950 mb-1 text-sm">UMKM Transfer Dana</h3>
+                    <p class="text-xs text-slate-500">UMKM menyetor anggaran proyek ke rekening aman Sambung Karya.</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-purple-100 shadow-sm relative text-center">
+                    <div class="w-12 h-12 bg-purple-100 text-purple-700 rounded-full flex items-center justify-center font-bold text-lg mx-auto mb-3">2</div>
+                    <h3 class="font-bold text-purple-950 mb-1 text-sm">Pengerjaan Proyek</h3>
+                    <p class="text-xs text-slate-500">Mahasiswa mulai mengerjakan sesuai kesepakatan brief & timeline.</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-purple-100 shadow-sm relative text-center">
+                    <div class="w-12 h-12 bg-purple-100 text-purple-700 rounded-full flex items-center justify-center font-bold text-lg mx-auto mb-3">3</div>
+                    <h3 class="font-bold text-purple-950 mb-1 text-sm">Review & Revisi</h3>
+                    <p class="text-xs text-slate-500">UMKM mengecek hasil pekerjaan dan menyetujui jika sesuai.</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-purple-100 shadow-sm relative text-center">
+                    <div class="w-12 h-12 bg-purple-100 text-purple-700 rounded-full flex items-center justify-center font-bold text-lg mx-auto mb-3">4</div>
+                    <h3 class="font-bold text-purple-950 mb-1 text-sm">Pencairan Dana</h3>
+                    <p class="text-xs text-slate-500">Dana diteruskan ke mahasiswa setelah dipotong komisi platform 12.5%.</p>
+                </div>
+            </div>
+
+            <!-- Interactive Escrow Calculator -->
+            <div class="bg-gradient-to-br from-purple-50 to-indigo-50 p-6 sm:p-8 rounded-3xl border border-purple-200 max-w-2xl mx-auto shadow-lg">
+                <h3 class="text-lg font-bold text-purple-950 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-calculator text-purple-600"></i> Simulator Kalkulator Escrow & Komisi
+                </h3>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Nilai Kesepakatan Proyek (Rp)</label>
+                        <input type="number" id="calcAmount" value="500000" step="50000" oninput="calculateEscrow()" class="w-full px-4 py-2.5 rounded-xl border border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm bg-white font-semibold">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 bg-white p-4 rounded-xl border border-purple-100 text-xs">
+                        <div>
+                            <span class="text-slate-500">Komisi Platform (12.5%):</span>
+                            <div id="calcCommission" class="text-base font-bold text-purple-700 mt-1">Rp 62.500</div>
+                        </div>
+                        <div>
+                            <span class="text-slate-500">Diterima Mahasiswa (87.5%):</span>
+                            <div id="calcStudentReceive" class="text-base font-bold text-emerald-600 mt-1">Rp 437.500</div>
+                        </div>
+                    </div>
+                    <p class="text-[11px] text-slate-500 italic">
+                        *Sesuai perencanaan bisnis proposal Sambung Karya, platform mengenakan biaya administrasi/komisi sebesar 12,5% untuk pemeliharaan sistem & pendampingan proyek.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TIM PENGEMBANG (Universitas Riau) ================= -->
+        <section id="tim" class="py-16 bg-slate-100 border-t border-slate-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-2xl mx-auto mb-12">
+                    <span class="text-purple-600 font-bold text-xs uppercase tracking-wider">Inovator Sambung Karya</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-purple-950 mt-1">Tim Pengembang SDBC 2026</h2>
+                    <p class="text-slate-500 text-sm mt-1">Universitas Riau, Pekanbaru. Dibawah bimbingan Ardian, S.E, M.B.A</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- CEO Card -->
+                    <div class="bg-white p-6 rounded-2xl border border-purple-100 shadow-sm text-center hover:shadow-md transition-shadow">
+                        <div class="w-20 h-20 bg-purple-100 text-purple-700 rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4 border-2 border-purple-400">
+                            SA
+                        </div>
+                        <h3 class="font-extrabold text-purple-950">Syifa Amanda</h3>
+                        <span class="text-xs font-semibold text-purple-600 bg-purple-50 px-2.5 py-0.5 rounded-full inline-block mt-1">Chief Executive Officer (CEO)</span>
+                        <p class="text-xs text-slate-500 mt-3">NIM: 26011101361<br>Menentukan arah & strategi bisnis platform Sambung Karya.</p>
+                    </div>
+
+                    <!-- CTO Card -->
+                    <div class="bg-white p-6 rounded-2xl border border-purple-100 shadow-sm text-center hover:shadow-md transition-shadow">
+                        <div class="w-20 h-20 bg-purple-100 text-purple-700 rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4 border-2 border-purple-400">
+                            DS
+                        </div>
+                        <h3 class="font-extrabold text-purple-950">Dzikrina Syifaul Aini</h3>
+                        <span class="text-xs font-semibold text-purple-600 bg-purple-50 px-2.5 py-0.5 rounded-full inline-block mt-1">Chief Technology Officer (CTO)</span>
+                        <p class="text-xs text-slate-500 mt-3">NIM: 26011101356<br>Merancang, mengembangkan & merawat platform digital & sistem escrow.</p>
+                    </div>
+
+                    <!-- CMO Card -->
+                    <div class="bg-white p-6 rounded-2xl border border-purple-100 shadow-sm text-center hover:shadow-md transition-shadow">
+                        <div class="w-20 h-20 bg-purple-100 text-purple-700 rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4 border-2 border-purple-400">
+                            AZ
+                        </div>
+                        <h3 class="font-extrabold text-purple-950">Airin Zahara Jusita</h3>
+                        <span class="text-xs font-semibold text-purple-600 bg-purple-50 px-2.5 py-0.5 rounded-full inline-block mt-1">Chief Marketing Officer (CMO)</span>
+                        <p class="text-xs text-slate-500 mt-3">NIM: 26011102782<br>Pemasaran, kurasi mahasiswa & pendampingan proyek UMKM.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="bg-purple-950 text-white pt-12 pb-8 border-t border-purple-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div class="space-y-3">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center font-bold">SK</div>
+                        <span class="text-xl font-bold">SambungKarya</span>
+                    </div>
+                    <p class="text-xs text-purple-200">
+                        Ekosistem Digital Penghubung Talenta Mahasiswa dan UMKM Menuju Ekonomi Inklusif.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-sm text-purple-200 mb-3">Layanan</h4>
+                    <ul class="space-y-2 text-xs text-purple-300">
+                        <li><a href="#marketplace" class="hover:underline">Desain Logo & Kemasan</a></li>
+                        <li><a href="#marketplace" class="hover:underline">Foto Produk UMKM</a></li>
+                        <li><a href="#marketplace" class="hover:underline">Konten Media Sosial</a></li>
+                        <li><a href="#marketplace" class="hover:underline">Pembuatan Toko Daring</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-sm text-purple-200 mb-3">Kontak Resmi</h4>
+                    <ul class="space-y-2 text-xs text-purple-300">
+                        <li><i class="fa-brands fa-whatsapp text-emerald-400 mr-2"></i>082360482744</li>
+                        <li><i class="fa-solid fa-location-dot text-purple-400 mr-2"></i>Pekanbaru, Riau - Indonesia</li>
+                        <li><i class="fa-solid fa-building-columns text-purple-400 mr-2"></i>Universitas Riau</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-sm text-purple-200 mb-3">Hubungi Langsung</h4>
+                    <a href="https://wa.me/6282360482744" target="_blank" class="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition-all shadow">
+                        <i class="fa-brands fa-whatsapp text-base"></i>
+                        <span>Chat via WhatsApp</span>
+                    </a>
+                </div>
+            </div>
+            <div class="border-t border-purple-900 pt-6 text-center text-xs text-purple-400">
+                &copy; 2026 Sambung Karya Digital Ecosystem. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- ================= FLOATING WHATSAPP BUTTON ================= -->
+    <a href="https://wa.me/6282360482744?text=Halo%20Sambung%20Karya,%20saya%20ingin%20berkonsultasi..." target="_blank" class="fixed bottom-6 right-6 z-40 bg-emerald-500 hover:bg-emerald-600 text-white p-4 rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-all group" title="Chat WhatsApp 082360482744">
+        <i class="fa-brands fa-whatsapp text-2xl"></i>
+        <span class="max-w-0 overflow-hidden whitespace-nowrap group-hover:max-w-xs transition-all duration-300 ease-in-out text-xs font-bold pl-0 group-hover:pl-2">
+            Chat WA 082360482744
+        </span>
+    </a>
+
+    <!-- ================= MODAL POST JOB (FOR UMKM) ================= -->
+    <div id="postJobModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl animate-fade-in">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h3 class="font-bold text-purple-950 text-lg">Tawarkan Proyek Pekerjaan UMKM</h3>
+                <button onclick="closePostJobModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <form onsubmit="handlePostJob(event)" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Nama Usaha / UMKM</label>
+                    <input type="text" id="jobUmkmName" required placeholder="Contoh: Kopi Keripik Riau" class="w-full px-3.5 py-2 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-purple-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Judul Proyek / Pekerjaan</label>
+                    <input type="text" id="jobTitle" required placeholder="Contoh: Desain Kemasan Botol 250ml" class="w-full px-3.5 py-2 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-purple-500 focus:outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Kategori</label>
+                        <select id="jobCategory" class="w-full px-3.5 py-2 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-purple-500 focus:outline-none">
+                            <option value="Desain">Desain</option>
+                            <option value="Foto">Foto Produk</option>
+                            <option value="Web">Website / Toko Online</option>
+                            <option value="Akuntansi">Pembukuan</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Budget Proyek (Rp)</label>
+                        <input type="number" id="jobBudget" required placeholder="500000" class="w-full px-3.5 py-2 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-purple-500 focus:outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Deskripsi Brief Singkat</label>
+                    <textarea id="jobBrief" rows="3" required placeholder="Jelaskan spesifikasi kebutuhan pekerjaan..." class="w-full px-3.5 py-2 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-purple-500 focus:outline-none"></textarea>
+                </div>
+                <div class="pt-2 flex justify-end gap-2">
+                    <button type="button" onclick="closePostJobModal()" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100">Batal</button>
+                    <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white font-semibold px-5 py-2 rounded-xl text-xs shadow-md">Posting Sekarang</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= MODAL ORDER / APPLY ESCROW ================= -->
+    <div id="orderModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h3 id="modalOrderTitle" class="font-bold text-purple-950 text-base">Pesan Layanan via Escrow</h3>
+                <button onclick="closeOrderModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="modalOrderContent" class="space-y-3 text-xs text-slate-600">
+                <!-- Filled via JS -->
+            </div>
+            <div class="bg-purple-50 p-3 rounded-xl border border-purple-100 text-xs text-purple-900 space-y-1">
+                <div class="font-bold text-purple-950"><i class="fa-solid fa-shield-halved text-purple-600 mr-1"></i> Garansi Escrow Sambung Karya</div>
+                <p>Pembayaran akan ditahan dengan aman oleh tim Sambung Karya sampai pekerjaan diselesaikan oleh mahasiswa.</p>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeOrderModal()" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100">Tutup</button>
+                <a id="modalWaBtn" href="#" target="_blank" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-4 py-2 rounded-xl text-xs shadow inline-flex items-center gap-1.5">
+                    <i class="fa-brands fa-whatsapp text-sm"></i> Lanjutkan via WhatsApp
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= JAVASCRIPT LOGIC ================= -->
+    <script>
+        // Sample Data: Services offered by Students
+        const servicesData = [
+            {
+                id: 1,
+                studentName: "Syifa Amanda",
+                university: "Universitas Riau",
+                major: "Manajemen / Desain Kreatif",
+                title: "Desain Logo & Identitas Merek UMKM",
+                category: "Desain",
+                price: 250000,
+                rating: 4.9,
+                reviews: 18,
+                image: "https://images.unsplash.com/photo-1626785774573-4b799315345d?w=500&auto=format&fit=crop&q=80"
+            },
+            {
+                id: 2,
+                studentName: "Dzikrina Syifaul",
+                university: "Universitas Riau",
+                major: "Teknik Informatika",
+                title: "Pembuatan Website Toko Online / Landing Page",
+                category: "Web",
+                price: 750000,
+                rating: 5.0,
+                reviews: 12,
+                image: "https://images.unsplash.com/photo-1547658719-da2b51169166?w=500&auto=format&fit=crop&q=80"
+            },
+            {
+                id: 3,
+                studentName: "Airin Zahara",
+                university: "Universitas Riau",
+                major: "Ilmu Komunikasi",
+                title: "Foto Produk & Konten Feed Instagram UMKM",
+                category: "Foto",
+                price: 300000,
+                rating: 4.8,
+                reviews: 24,
+                image: "https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=500&auto=format&fit=crop&q=80"
+            },
+            {
+                id: 4,
+                studentName: "Budi Pratama",
+                university: "Universitas Riau",
+                major: "Akuntansi",
+                title: "Penyusunan Laporan Keuangan & Pembukuan Dasar",
+                category: "Akuntansi",
+                price: 400000,
+                rating: 4.9,
+                reviews: 15,
+                image: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=500&auto=format&fit=crop&q=80"
+            }
+        ];
+
+        // Sample Data: Jobs posted by UMKM
+        const jobsData = [
+            {
+                id: 101,
+                umkm: "Kopi Keripik Nanas Pekanbaru",
+                title: "Dibutuhkan Desainer Label Kemasan Produk Nanas",
+                category: "Desain",
+                budget: 350000,
+                brief: "Mencari mahasiswa kreatif untuk mendesain stiker kemasan kemasan standing pouch."
+            },
+            {
+                id: 102,
+                umkm: "Batik Riau Modern",
+                title: "Fotografer Katalog Produk Busana Batik",
+                category: "Foto",
+                budget: 500000,
+                brief: "Dibutuhkan foto 10 set pakaian batik siap pakai untuk katalog online."
+            }
+        ];
+
+        // Auth Logic
+        function switchAuthTab(tab) {
+            const googleView = document.getElementById('googleView');
+            const passView = document.getElementById('passView');
+            const tabGoogleBtn = document.getElementById('tabGoogleBtn');
+            const tabPassBtn = document.getElementById('tabPassBtn');
+
+            if (tab === 'google') {
+                googleView.classList.remove('hidden');
+                passView.classList.add('hidden');
+                tabGoogleBtn.className = "flex-1 py-2 font-medium text-sm text-purple-700 border-b-2 border-purple-600 transition-colors";
+                tabPassBtn.className = "flex-1 py-2 font-medium text-sm text-slate-400 hover:text-purple-600 border-b-2 border-transparent transition-colors";
+            } else {
+                googleView.classList.add('hidden');
+                passView.classList.remove('hidden');
+                tabPassBtn.className = "flex-1 py-2 font-medium text-sm text-purple-700 border-b-2 border-purple-600 transition-colors";
+                tabGoogleBtn.className = "flex-1 py-2 font-medium text-sm text-slate-400 hover:text-purple-600 border-b-2 border-transparent transition-colors";
+            }
+        }
+
+        function handleGoogleLogin(role) {
+            const name = role === 'Mahasiswa' ? 'Mahasiswa User' : 'Pelaku UMKM';
+            setUser(name, role);
+            document.getElementById('authOverlay').classList.add('hidden');
+        }
+
+        function handlePasswordAuth() {
+            const pass = document.getElementById('demoPasswordInput').value;
+            const err = document.getElementById('passError');
+            if (pass === 'sambungkarya2026' || pass === 'admin') {
+                setUser('Pengguna Demo', 'Guest');
+                document.getElementById('authOverlay').classList.add('hidden');
+            } else {
+                err.classList.remove('hidden');
+            }
+        }
+
+        function setUser(name, role) {
+            document.getElementById('userName').innerText = name;
+            document.getElementById('userAvatar').innerText = name.charAt(0);
+        }
+
+        function logout() {
+            document.getElementById('authOverlay').classList.remove('hidden');
+        }
+
+        // Services Rendering & Filtering
+        function renderServices(filter = 'all') {
+            const container = document.getElementById('servicesGrid');
+            container.innerHTML = '';
+
+            const filtered = filter === 'all' ? servicesData : servicesData.filter(s => s.category === filter);
+
+            filtered.forEach(s => {
+                const card = document.createElement('div');
+                card.className = "bg-white rounded-2xl border border-purple-100 shadow-sm overflow-hidden hover:shadow-lg transition-all flex flex-col justify-between";
+                card.innerHTML = `
+                    <div>
+                        <div class="h-44 bg-slate-100 relative overflow-hidden">
+                            <img src="${s.image}" alt="${s.title}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300" onerror="this.src='https://placehold.co/500x300/4c1d95/ffffff?text=Sambung+Karya'">
+                            <span class="absolute top-3 right-3 bg-purple-950/80 backdrop-blur-md text-white text-[10px] font-bold px-2.5 py-1 rounded-full">
+                                ${s.category}
+                            </span>
+                        </div>
+                        <div class="p-5 space-y-3">
+                            <div class="flex items-center gap-2 text-xs text-slate-500">
+                                <span class="font-bold text-purple-700">${s.studentName}</span>
+                                <span>•</span>
+                                <span>${s.university}</span>
+                            </div>
+                            <h3 class="font-bold text-purple-950 text-base leading-snug hover:text-purple-600 transition-colors cursor-pointer">
+                                ${s.title}
+                            </h3>
+                            <div class="flex items-center gap-1 text-amber-500 text-xs font-semibold">
+                                <i class="fa-solid fa-star"></i>
+                                <span>${s.rating}</span>
+                                <span class="text-slate-400">(${s.reviews} ulasan)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-5 pt-0 border-t border-slate-50 flex items-center justify-between mt-2">
+                        <div>
+                            <span class="text-[10px] text-slate-400 block">Mulai dari</span>
+                            <span class="font-black text-purple-900 text-base">Rp ${s.price.toLocaleString('id-ID')}</span>
+                        </div>
+                        <button onclick="openOrderModal('${s.title}', '${s.studentName}', ${s.price})" class="bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow transition-all flex items-center gap-1.5">
+                            <i class="fa-solid fa-shield-halved"></i>
+                            <span>Pesan via Escrow</span>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function filterServices(cat) {
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.className = "category-btn bg-purple-50 hover:bg-purple-100 text-purple-700 text-xs font-semibold px-4 py-2 rounded-xl transition-all";
+            });
+            event.target.className = "category-btn active bg-purple-600 text-white text-xs font-semibold px-4 py-2 rounded-xl transition-all";
+            renderServices(cat);
+        }
+
+        // Job Board Rendering
+        function renderJobs() {
+            const container = document.getElementById('jobList');
+            container.innerHTML = '';
+
+            jobsData.forEach(j => {
+                const item = document.createElement('div');
+                item.className = "bg-purple-950/60 border border-purple-700/50 p-5 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4 backdrop-blur-md";
+                item.innerHTML = `
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2">
+                            <span class="bg-purple-800 text-purple-200 text-[10px] font-bold px-2 py-0.5 rounded">
+                                ${j.category}
+                            </span>
+                            <span class="text-xs text-purple-300 font-semibold">${j.umkm}</span>
+                        </div>
+                        <h4 class="font-bold text-white text-base">${j.title}</h4>
+                        <p class="text-xs text-purple-200">${j.brief}</p>
+                    </div>
+                    <div class="flex items-center gap-4 border-t md:border-t-0 border-purple-800/80 pt-3 md:pt-0 justify-between md:justify-end">
+                        <div class="text-left md:text-right">
+                            <span class="text-[10px] text-purple-300 block">Anggaran Proyek</span>
+                            <span class="font-extrabold text-yellow-400 text-base">Rp ${j.budget.toLocaleString('id-ID')}</span>
+                        </div>
+                        <button onclick="applyJob('${j.title}', '${j.umkm}')" class="bg-yellow-400 hover:bg-yellow-300 text-purple-950 font-bold px-4 py-2 rounded-xl text-xs shadow transition-all">
+                            Lamar Proyek
+                        </button>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        // Calculator Logic
+        function calculateEscrow() {
+            const amount = parseFloat(document.getElementById('calcAmount').value) || 0;
+            const comm = amount * 0.125;
+            const receive = amount - comm;
+
+            document.getElementById('calcCommission').innerText = "Rp " + comm.toLocaleString('id-ID');
+            document.getElementById('calcStudentReceive').innerText = "Rp " + receive.toLocaleString('id-ID');
+        }
+
+        // Modals Logic
+        function openPostJobModal() {
+            document.getElementById('postJobModal').classList.remove('hidden');
+        }
+
+        function closePostJobModal() {
+            document.getElementById('postJobModal').classList.add('hidden');
+        }
+
+        function handlePostJob(e) {
+            e.preventDefault();
+            const umkm = document.getElementById('jobUmkmName').value;
+            const title = document.getElementById('jobTitle').value;
+            const category = document.getElementById('jobCategory').value;
+            const budget = parseInt(document.getElementById('jobBudget').value);
+            const brief = document.getElementById('jobBrief').value;
+
+            jobsData.unshift({
+                id: Date.now(),
+                umkm, title, category, budget, brief
+            });
+
+            renderJobs();
+            closePostJobModal();
+            alert("Lowongan proyek berhasil diposting ke Papan Penawaran UMKM!");
+        }
+
+        function openOrderModal(title, student, price) {
+            const content = document.getElementById('modalOrderContent');
+            content.innerHTML = `
+                <div class="space-y-1">
+                    <div class="font-bold text-slate-800">${title}</div>
+                    <div>Penyedia Jasa: <span class="font-semibold text-purple-700">${student}</span></div>
+                    <div>Estimasi Biaya Escrow: <span class="font-bold text-slate-800">Rp ${price.toLocaleString('id-ID')}</span></div>
+                </div>
+            `;
+
+            const waMsg = encodeURIComponent(`Halo Admin Sambung Karya, saya ingin memesan jasa "${title}" oleh ${student} senilai Rp ${price.toLocaleString('id-ID')} via Escrow.`);
+            document.getElementById('modalWaBtn').href = `https://wa.me/6282360482744?text=${waMsg}`;
+
+            document.getElementById('orderModal').classList.remove('hidden');
+        }
+
+        function applyJob(title, umkm) {
+            const waMsg = encodeURIComponent(`Halo Admin Sambung Karya, saya mahasiswa berminat melamar proyek "${title}" dari ${umkm}.`);
+            window.open(`https://wa.me/6282360482744?text=${waMsg}`, '_blank');
+        }
+
+        function closeOrderModal() {
+            document.getElementById('orderModal').classList.add('hidden');
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Initial Load
+        window.onload = function() {
+            renderServices();
+            renderJobs();
+            calculateEscrow();
+        };
+    </script>
+</body>
+</html>
